@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container mt-5">
+    <div class="form-group">
+      <label for="inputValue">Input Value:</label>
+      <input type="number" class="form-control" id="inputValue">
+    </div>
+    <canvas id="graphCanvas" width="200" height="200"></canvas>
+    <canvas id="pieChartCanvas" width="100" height="100"></canvas>
+    <canvas id="gradientChartCanvas" width="100" height="100"></canvas>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var canvas = document.getElementById('graphCanvas');
+      var ctx = canvas.getContext('2d');
+      var pieChartCanvas = document.getElementById('pieChartCanvas');
+      var gradientChartCanvas = document.getElementById('gradientChartCanvas');
+
+      // Graph size and initial input value
+      var graphSize = 100;
+      var inputValue = 50;
+
+      // Function to update the graph
+      function updateGraph() {
+        // Retrieve the current value from the input field
+        inputValue = parseInt(document.getElementById('inputValue').value);
+
+        // Calculate graph dimensions
+        var graphWidth = 90;
+        var graphHeight = canvas.height;
+        var barHeight = graphHeight / graphSize;
+        var barWidth = graphWidth * (inputValue / graphSize);
+
+        // Clear the canvas
+        ctx.clearRect(0, 0, graphWidth, graphHeight);
+
+        // Draw the graph
+        for (var i = 0; i < graphSize; i++) {
+          var x = 0;
+          var y = (graphSize - i - 1) * barHeight; // Reverse the y-coordinate to plot from bottom to top
+
+          if (i < inputValue) {
+            ctx.fillStyle = 'red'; // Color for values below the input value
+          } else {
+            ctx.fillStyle = 'green'; // Color for values equal to or above the input value
+          }
+
+          ctx.fillRect(x, y, barWidth, barHeight);
+        }
+
+        // Retrieve the existing pie chart instance and destroy it
+        var existingPieChart = Chart.getChart(pieChartCanvas);
+        if (existingPieChart) {
+          existingPieChart.destroy();
+        }
+
+        // Pie Chart
+        var pieChart = new Chart(pieChartCanvas, {
+          type: 'pie',
+          data: {
+            labels: ['Below Input', 'Equal or Above Input'],
+            datasets: [{
+              data: [inputValue, graphSize - inputValue],
+              backgroundColor: ['red', 'green']
+            }]
+          },
+          options: {
+            title: {
+              display: true,
+              text: 'Pie Chart'
+            }
+          }
+        });
+
+        // Retrieve the existing gradient chart instance and destroy it
+        var existingGradientChart = Chart.getChart(gradientChartCanvas);
+        if (existingGradientChart) {
+          existingGradientChart.destroy();
+        }
+
+        // Gradient Chart
+        var gradientChart = new Chart(gradientChartCanvas, {
+          type: 'bar',
+          data: {
+            labels: Array.from(Array(graphSize), (_, i) => i + 1),
+            datasets: [{
+              label: 'Value',
+  
+data: Array.from(Array(graphSize), (_, i) => i < inputValue ? i : null),
+backgroundColor: 'rgba(255, 99, 132, 0.2)',
+borderColor: 'rgba(255, 99, 132, 1)',
+borderWidth: 1
+}]
+},
+options: {
+scales: {
+y: {
+beginAtZero: true
+},
+x: {
+display: false
+}
+},
+plugins: {
+legend: {
+display: false
+},
+title: {
+display: true,
+text: 'Gradient Chart'
+}
+}
+}
+});
+
+}
+
+// Initial graph update
+updateGraph();
+
+// Add event listener to input field
+var inputField = document.getElementById('inputValue');
+inputField.addEventListener('input', updateGraph);
+});
+</script>
+</body>
+</html>
+
