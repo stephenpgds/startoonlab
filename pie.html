@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container mt-5">
+    <div class="form-group">
+      <label for="inputValue">Input Value:</label>
+      <input type="number" class="form-control" id="inputValue">
+    </div>
+    <canvas id="pieChartCanvas" width="100" height="100"></canvas>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var pieChartCanvas = document.getElementById('pieChartCanvas');
+
+      // Graph size and initial input value
+      var graphSize = 100;
+      var inputValue = 50;
+
+      // Function to update the graph
+      function updateGraph() {
+        // Retrieve the current value from the input field
+        inputValue = parseInt(document.getElementById('inputValue').value);
+
+        // Retrieve the existing pie chart instance and destroy it
+        var existingPieChart = Chart.getChart(pieChartCanvas);
+        if (existingPieChart) {
+          existingPieChart.destroy();
+        }
+
+        // Pie Chart
+        var pieChart = new Chart(pieChartCanvas, {
+          type: 'pie',
+          data: {
+            labels: ['Below Input', 'Equal or Above Input'],
+            datasets: [{
+              data: [inputValue, graphSize - inputValue],
+              backgroundColor: ['red', 'green']
+            }]
+          },
+          options: {
+            title: {
+              display: true,
+              text: 'Pie Chart'
+            }
+          }
+        });
+      }
+
+      // Initial graph update
+      updateGraph();
+
+      // Add event listener to input field
+      var inputField = document.getElementById('inputValue');
+      inputField.addEventListener('input', updateGraph);
+    });
+  </script>
+</body>
+</html>

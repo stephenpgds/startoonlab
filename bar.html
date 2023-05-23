@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container mt-5">
+    <div class="form-group">
+      <label for="inputValue">Input Value:</label>
+      <input type="number" class="form-control" id="inputValue">
+    </div>
+    <canvas id="graphCanvas" width="200" height="200"></canvas>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var canvas = document.getElementById('graphCanvas');
+      var ctx = canvas.getContext('2d');
+
+      // Graph size and initial input value
+      var graphSize = 100;
+      var inputValue = 50;
+
+      // Function to update the graph
+      function updateGraph() {
+        // Retrieve the current value from the input field
+        inputValue = parseInt(document.getElementById('inputValue').value);
+
+        // Calculate graph dimensions
+        var graphWidth = 90;
+        var graphHeight = canvas.height;
+        var barHeight = graphHeight / graphSize;
+        var barWidth = graphWidth * (inputValue / graphSize);
+
+        // Clear the canvas
+        ctx.clearRect(0, 0, graphWidth, graphHeight);
+
+        // Draw the graph
+        for (var i = 0; i < graphSize; i++) {
+          var x = 0;
+          var y = (graphSize - i - 1) * barHeight; // Reverse the y-coordinate to plot from bottom to top
+
+          if (i < inputValue) {
+            ctx.fillStyle = 'red'; // Color for values below the input value
+          } else {
+            ctx.fillStyle = 'green'; // Color for values equal to or above the input value
+          }
+
+          ctx.fillRect(x, y, barWidth, barHeight);
+        }
+      }
+
+      // Initial graph update
+      updateGraph();
+
+      // Add event listener to input field
+      var inputField = document.getElementById('inputValue');
+      inputField.addEventListener('input', updateGraph);
+    });
+  </script>
+</body>
+</html>
